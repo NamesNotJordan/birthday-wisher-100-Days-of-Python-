@@ -1,6 +1,11 @@
 from datetime import datetime
 import pandas
 import random
+import smtplib
+
+EMAIL = ""
+PASSWORD = ""
+
 # 2. Check if today matches a birthday in the birthdays.csv
 # HINT 1: Create a tuple from today's month and day using datetime. e.g.
 today = (datetime.now().month, datetime.now().day)
@@ -20,7 +25,10 @@ if today in birthdays_dict:
     with open(letter_path) as letter_file:
         contents = letter_file.read()
         contents.replace("[NAME]", birthday_baby["name"])
-    
+    with smtplib.SMTP("smtp.gmail.com") as connection:
+        connection.starttls()
+        connection.login(EMAIL,PASSWORD)
+        connection.sendmail(from_addr=EMAIL, to_addrs=birthday_baby["email"], msg=f"Subject:HAppy Birthday!\n\n{contents}")
 # 3. If there is a match, pick a random letter (letter_1.txt/letter_2.txt/letter_3.txt) from letter_templates and replace the [NAME] with the person's actual name from birthdays.csv
 # HINT 1: Think about the relative file path to open each letter. 
 # HINT 2: Use the random module to get a number between 1-3 to pick a randome letter.
